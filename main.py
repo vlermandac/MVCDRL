@@ -14,20 +14,22 @@ import numpy as np
 import time
 import torch
 
-n = 30  # number of nodes
+#n = 30  # number of nodes
 p = 0.15 # edge probability
-env = MVC(n,p)
-cuda_flag = True
-alg = DiscreteActorCritic(env,cuda_flag)
+#env = MVC(n,p)
+cuda_flag = False
+
+for n in [10, 20, 30, 40, 50, 60, 70, 80, 90, 100]:
+    alg = DiscreteActorCritic(MVC(n,p),cuda_flag)
 
 
-num_episodes = 4000
-for i in range(num_episodes):
-    T1 = time.time()
-    log = alg.train()
-    T2 = time.time()
-    print('Epoch: {}. R: {}. TD error: {}. H: {}. T: {}'.format(i,np.round(log.get_current('tot_return'),2),np.round(log.get_current('TD_error'),3),np.round(log.get_current('entropy'),3),np.round(T2-T1,3)))
-    
+    num_episodes = 100
+    for i in range(num_episodes):
+        T1 = time.time()
+        log = alg.train()
+        T2 = time.time()
+        print('Epoch: {}. R: {}. TD error: {}. H: {}. T: {}'.format(i,np.round(log.get_current('tot_return'),2),np.round(log.get_current('TD_error'),3),np.round(log.get_current('entropy'),3),np.round(T2-T1,3)))
+        
 
 Y = np.asarray(log.get_log('tot_return'))
 Y2 = smooth(Y)
